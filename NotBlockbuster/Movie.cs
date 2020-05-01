@@ -27,14 +27,14 @@ namespace NotBlockbuster {
 
         // Movie object constructor
         public Movie(string title, Genres genre, Classifications classification, string director, string starring, int duration, DateTime releaseDate, int numCopies) {
-            this.Title = title;
-            this.Genre = genre; // TODO: list
-            this.Classification = classification;
-            this.Director = director; // TODO: list
-            this.Starring = starring; // TODO: list
-            this.Duration = duration;
-            this.ReleaseDate = releaseDate;
-            this.NumCopies = numCopies;
+            Title = title;
+            Genre = genre; // TODO: list
+            Classification = classification;
+            Director = director; // TODO: full name, list
+            Starring = starring; // TODO: full name, list
+            Duration = duration;
+            ReleaseDate = releaseDate;
+            NumAvCopies = numCopies;
         }
 
         // Get and Set movie properties
@@ -45,7 +45,7 @@ namespace NotBlockbuster {
         public string Starring { get; set; }
         public int Duration { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public int NumCopies { get; set; }
+        public int NumAvCopies { get; set; }
 
         // Print movie properties
         public override string ToString() {
@@ -57,7 +57,7 @@ namespace NotBlockbuster {
                 Stars: {Starring}
                 Duration: {Duration}
                 Release Date: {ReleaseDate.ToShortDateString()}
-                Number of Copies: {NumCopies}
+                Number of Copies: {NumAvCopies}
                 ";
         }
 

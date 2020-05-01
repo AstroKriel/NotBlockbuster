@@ -7,7 +7,6 @@ namespace NotBlockbuster {
             // Node properties
             public Movie movie;
             public Node left, right;
-
             public Node(Movie movie) {
                 this.movie = movie;
                 left = right = null;

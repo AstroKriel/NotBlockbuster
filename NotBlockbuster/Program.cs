@@ -199,7 +199,7 @@ namespace NotBlockbuster {
                     user_input = Console.ReadLine();
                 } while (!int.TryParse(user_input, out user_length) || (Convert.ToInt32(user_length) < 0));
                 // 7. Movie release date
-                do {Console.Write("\t Release date: ");
+                do {Console.Write("\t Release date (dd/mm/yyyy): ");
                 } while (   !DateTime.TryParseExact(Console.ReadLine(), new string[] { "d/M/yyyy", "dd/MM/yyyy" },
                             CultureInfo.InvariantCulture, DateTimeStyles.None, out user_date) );
                 // 8. Number of movie copies
@@ -226,6 +226,8 @@ namespace NotBlockbuster {
                 // If the user's input is incorrect, display so when the menu is re-drawn
                 bool_first_entry = false;
             } while (user_input.Equals("n"));
+            // If the user has asked to cancel, then return them to the staff menu
+            if (user_input.Equals("0")) { return "1"; }
             // If the user has confirmed the movie details are correct
             if (user_input.Equals("y")) {
                 if (movie_collec.SearchMovie(user_title) == null) {
@@ -239,11 +241,14 @@ namespace NotBlockbuster {
                                                         user_date,
                                                         user_copies));
                 } else {
+                    // If the movie exists, check if the user would like to update the movie details
                     Console.WriteLine("The movie already exists. Would you like to update the movie's details?");
+                    // Perform this loop until the user has chosen 'yes' or 'no'
                     do {Console.Write("(Y)es / (N)o: ");
                         user_input = Console.ReadLine().ToLower();
                     } while (!( user_input.Equals("y") || user_input.Equals("n") ));
                     if (user_input.Equals("y")) {
+                        // If the user would like to update the movie details
                         movie_collec.InsertMovie(new Movie(user_title,
                                                         (Movie.Genres)user_genre,
                                                         (Movie.Classifications)user_class,
@@ -252,21 +257,21 @@ namespace NotBlockbuster {
                                                         user_length,
                                                         user_date,
                                                         user_copies));
-                    } else { Console.WriteLine("The changes have been discarded."); }
+                    } else { Console.WriteLine("The changes have been discarded."); } // Otherwise, discard movie details
                 }
             }
             // Check if the user would like to add another movie
-            // Perform this loop until the user has chosen a valid option
+            // Perform this loop until the user has chosen 'yes' or 'no'
             do {Console.Write("\nWould you like to ADD another movie? (Y)es / (N)o: ");
                 user_input = Console.ReadLine().ToLower();
             } while (!( user_input.Equals("y") || user_input.Equals("n") ));
-            // If the user would like to add more movies, stay on the ADD menu
+            // If the user would like to add more movies, stay on the ADD MOVIE menu
             if (string.Equals(user_input, "y")) { return "2"; }
-            // Otherwise, return to the staff menu
+            // Otherwise, return them to the staff menu
             return "1";
         }
 
-        public string StaffDeleteMovie(MovieCollection movie_collec) {
+        public string StaffDeleteMovie(MovieCollection movie_collec) { // TODO: remove movie from all users
             /* Delete Movie
              * Returns:
              * 2: Remove another movie
@@ -314,35 +319,188 @@ namespace NotBlockbuster {
             do {Console.Write("Would you like to REMOVE another movie? (Y)es / (N)o: ");
                 user_input = Console.ReadLine().ToLower();
             } while (!( user_input.Equals("y") || user_input.Equals("n") ));
-            // If the user would like to remove another movie, then stay on the delete menu
+            // If the user would like to remove another movie, then stay on the DELETE MOVIE menu
             if (string.Equals(user_input, "y")) { return "2"; }
             // Otherwise, return to the staff menu
+            return "1";
+        }
+
+        public string StaffAddMember(MemberCollection member_collec) {
+            /* Add Member
+             * Returns:
+             * 2: Add another member
+             * 1: Return to the staff menu
+             * 0: Return to the main menu
+             */
+            // Initialise important varbiales
+            string first_name;
+            string last_name;
+            string address;
+            string contact_number;
+            int temp_num;
+            string user_input = "NA";
+            bool bool_first_entry = true;
+            // Perform the loop until the user has chosen a valid option
+            do {// Clear the screen
+                Console.Clear();
+                // Display the staff menu options
+                Console.WriteLine("============= Add a Member =============");
+                Console.WriteLine("\t Enter member details.");
+                Console.WriteLine("==========================================\n");
+                // Ask for the user's input
+                if (!bool_first_entry) { Console.WriteLine("Please re-enter the member's details."); }
+                else { Console.WriteLine("Please enter the member's details."); }
+                // Collect all member details
+                // 1. Member's first name
+                // Perform the loop until the user has input a string
+                do { Console.Write("\t First name: ");
+                    first_name = Console.ReadLine();
+                } while (first_name.Length == 0);
+                // 2. Member's last name
+                // Perform the loop until the user has input a string
+                do { Console.Write("\t Last name: ");
+                    last_name = Console.ReadLine();
+                } while (last_name.Length == 0);
+                // 3. Member's address
+                // Perform the loop until the user has input a string
+                do { Console.Write("\t Address: ");
+                    address = Console.ReadLine();
+                } while (address.Length == 0);
+                // 4. Member's contact phone number
+                // Perform the loop until the user has input a string of numbers
+                do { Console.Write("\t Contact number: ");
+                    contact_number = Console.ReadLine();
+                } while ( !int.TryParse(contact_number, out temp_num) || (Convert.ToInt32(temp_num) < 0));
+                // Check the details are correct
+                Console.WriteLine("\nThe member details you entered are:");
+                Console.WriteLine($@"Member Details:
+                    Name: {first_name} {last_name}
+                    Address: {address}
+                    Contact Number: {contact_number}
+                    ");
+                // Perform this loop until the user has chosen a valid option
+                do {Console.Write("Are the member's DETAILS correct? (Y)es / (N)o / (0 to cancel): ");
+                    user_input = Console.ReadLine().ToLower();
+                } while (!( user_input.Equals("y") || user_input.Equals("n") || user_input.Equals("0") ));
+                // If the user's input is incorrect, display so when the menu is re-drawn
+                bool_first_entry = false;
+            } while (user_input.Equals("n"));
+            // If the user has asked to cancel, then return them to the staff menu
+            if (user_input.Equals("0")) { return "1"; }
+            // If the user has confirmed the member details are correct
+            if (user_input.Equals("y")) {
+                if (member_collec.SearchMember(first_name, last_name) == null) {
+                    // If the member doesn't exist
+                    member_collec.AddMember(new Member( first_name, last_name, address, contact_number) );
+                } else {
+                    // If the member exists, don't add the member
+                    Console.WriteLine("Could not add the memeber. A member already exists with this name.");
+                }
+            }
+            // Check if the user would like to add another member
+            // Perform this loop until the user has chosen 'yes' or 'no'
+            do {Console.Write("\nWould you like to ADD another member? (Y)es / (N)o: ");
+                user_input = Console.ReadLine().ToLower();
+            } while (!( user_input.Equals("y") || user_input.Equals("n") ));
+            // If the user would like to add more members, stay on the ADD MEMBER menu
+            if (string.Equals(user_input, "y")) { return "2"; }
+            // Otherwise, return them to the staff menu
+            return "1";
+        }
+
+        public string StaffSearchMemberNumber(MemberCollection member_collec) {
+            /* Find Member Number
+             * Returns:
+             * 2: Find another member's number
+             * 1: Return to the staff menu
+             * 0: Return to the main menu
+             */
+            // Initialise important varbiales
+            Member temp_member;
+            string first_name;
+            string last_name;
+            string user_input = "NA";
+            bool bool_first_entry = true;
+            // Perform the loop until the user has chosen a valid option
+            do {// Clear the screen
+                Console.Clear();
+                // Display the staff menu options
+                Console.WriteLine("====== Find a Member's Phone Number ======");
+                Console.WriteLine("\t Enter member details.");
+                Console.WriteLine("==========================================\n");
+                // Ask for the user's input
+                if (!bool_first_entry) { Console.WriteLine("Please re-enter the member's details."); }
+                else { Console.WriteLine("Please enter the member's details."); }
+                // Collect all member details
+                // 1. Member's first name
+                // Perform the loop until the user has input a string
+                do { Console.Write("\t First name: ");
+                    first_name = Console.ReadLine();
+                } while (first_name.Length == 0);
+                // 2. Member's last name
+                // Perform the loop until the user has input a string
+                do { Console.Write("\t Last name: ");
+                    last_name = Console.ReadLine();
+                } while (last_name.Length == 0);
+                // Perform this loop until the user has chosen a valid option
+                do {Console.Write("Are the member's DETAILS correct? (Y)es / (N)o / (0 to cancel): ");
+                    user_input = Console.ReadLine().ToLower();
+                } while (!( user_input.Equals("y") || user_input.Equals("n") || user_input.Equals("0") ));
+                // If the user's input is incorrect, display so when the menu is re-drawn
+                bool_first_entry = false;
+            } while (user_input.Equals("n"));
+            // If the user has asked to cancel, then return them to the staff menu
+            if (user_input.Equals("0")) { return "1"; }
+            // If the user has confirmed the member's details are correct
+            if (user_input.Equals("y")) {
+                temp_member = member_collec.SearchMember(first_name, last_name);
+                if (temp_member == null) {
+                    // If the member doesn't exist
+                    Console.WriteLine("The member doesn't exist. Could not find the member's phone number.");
+                } else {
+                    // If the member exists, don't add the member
+                    Console.WriteLine("Member's contact number: " + temp_member.ContactNumber.ToString());
+                }
+            }
+            // Check if the user would like to find another member's number
+            // Perform this loop until the user has chosen 'yes' or 'no'
+            do {Console.Write("\nWould you like to FIND another member's contact number? (Y)es / (N)o: ");
+                user_input = Console.ReadLine().ToLower();
+            } while (!( user_input.Equals("y") || user_input.Equals("n") ));
+            // If the user would like to add more members, stay on the ADD MEMBER menu
+            if (string.Equals(user_input, "y")) { return "2"; }
+            // Otherwise, return them to the staff menu
             return "1";
         }
 
         public static void Main() {
             // Initialise the Binary Search Tree (BST)
             MovieCollection movie_collec = new MovieCollection();
+            // Create movie objects
+            Movie django = new Movie("Django Unchained", Movie.Genres.Action, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "Leonardo DiCaprio", 165, new DateTime(24/01/2013), 11);
+            Movie pulp = new Movie("Pulp Fiction", Movie.Genres.Adventure, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "John Travolta", 178, new DateTime(24/11/1994), 8);
+            Movie bugs = new Movie("A Bug's Life", Movie.Genres.Animated, Movie.Classifications.General, "John Lasseter", "Dave Foley", 95, new DateTime(3/121998), 3);
+            Movie jaws = new Movie("Jaws", Movie.Genres.Thriller, Movie.Classifications.Mature, "Steven Spielberg", "Shark", 130, new DateTime(27/11/1975), 4);
+            // Add movies to the BST
+            movie_collec.InsertMovie(django);
+            movie_collec.InsertMovie(pulp);
+            movie_collec.InsertMovie(bugs);
+            movie_collec.InsertMovie(jaws);
 
             // Initialise the array of members
             MemberCollection member_collec = new MemberCollection();
+            Member neco = new Member("Neco", "Kriel", "6 Mossglen Close", "0401267646");
+            Member bill = new Member("Bill", "Phillips", "7th Corner Street", "0401267646");
+            // Add members to the array
+            member_collec.AddMember(neco);
+            member_collec.AddMember(bill);
 
-            // Create movie objects
-            Movie a = new Movie("A", Movie.Genres.Thriller, Movie.Classifications.Mature, "Lachlan", "Lachlan", 180, new DateTime(24/04/1997), 1);
-            Movie b = new Movie("B", Movie.Genres.Thriller, Movie.Classifications.Mature, "Lachlan", "Lachlan", 180, new DateTime(24/04/1997), 5);
-            Movie c = new Movie("C", Movie.Genres.Thriller, Movie.Classifications.Mature, "Lachlan", "Lachlan", 180, new DateTime(24/04/1997), 3);
-            Movie d = new Movie("D", Movie.Genres.Thriller, Movie.Classifications.Mature, "Lachlan", "Lachlan", 180, new DateTime(24/04/1997), 4);
-            // Add movies to the BST
-            movie_collec.InsertMovie(b);
-            movie_collec.InsertMovie(d);
-            movie_collec.InsertMovie(a);
-            movie_collec.InsertMovie(c);
-
-            // Start the Program
+            // Initialise the menu variables
             MainProgram mainProgram = new MainProgram();
             string input_mainmenu = "NA"; // main menu option
             string input_submenu = "NA"; // sub-menu option
             string input_subsubmenu = "NA"; // sub-sub-menu option
+            // Start the Program
             while (true) {
                 // Display main menu
                 input_mainmenu = mainProgram.MainMenu();
@@ -373,7 +531,6 @@ namespace NotBlockbuster {
                                      * 0. return to the main menu
                                      */
                                     input_subsubmenu = mainProgram.StaffAddMovie(movie_collec);
-                                    // If user would like to return to another menu, sub-menu variable
                                     if (input_subsubmenu.Equals("0")) {
                                         // User would like to return to the main menu
                                         input_mainmenu = "NA";
@@ -398,7 +555,30 @@ namespace NotBlockbuster {
                                      * 0. return to the main menu
                                      */
                                     input_subsubmenu = mainProgram.StaffDeleteMovie(movie_collec);
-                                    // If user would like to return to another menu, sub-menu variable
+                                    if (input_subsubmenu.Equals("0")) {
+                                        // User would like to return to the main menu
+                                        input_mainmenu = "NA";
+                                        input_submenu = "NA";
+                                        input_subsubmenu = "NA";
+                                    } else if (input_subsubmenu.Equals("1")) {
+                                        // User would like to return to the staff menu
+                                        input_mainmenu = "1";
+                                        input_submenu = "NA";
+                                        input_subsubmenu = "NA";
+                                    }
+                                    // Print the BST structure to the console
+                                    movie_collec.PrintBST(movie_collec.root);
+                                    Console.ReadLine();
+                                }
+                            } else if (input_submenu.Equals("3")) {
+                                // If the user chose to register a new member
+                                while (input_submenu.Equals("3")) {
+                                    /* Would the user like to:
+                                     * 2. remove another movie
+                                     * 1. return to the staff menu
+                                     * 0. return to the main menu
+                                     */
+                                    input_subsubmenu = mainProgram.StaffAddMember(member_collec);
                                     if (input_subsubmenu.Equals("0")) {
                                         // User would like to return to the main menu
                                         input_mainmenu = "NA";
@@ -411,10 +591,27 @@ namespace NotBlockbuster {
                                         input_subsubmenu = "NA";
                                     }
                                 }
-                            } else if (input_submenu.Equals("3")) {
-                                // If the user chose to register a new member
                             } else if (input_submenu.Equals("4")) {
-                                // If the user chose to look for a member's phone number
+                                // If the user chose to search for a member's phone number
+                                while (input_submenu.Equals("4")) {
+                                    /* Would the user like to:
+                                     * 2. remove another movie
+                                     * 1. return to the staff menu
+                                     * 0. return to the main menu
+                                     */
+                                    input_subsubmenu = mainProgram.StaffSearchMemberNumber(member_collec);
+                                    if (input_subsubmenu.Equals("0")) {
+                                        // User would like to return to the main menu
+                                        input_mainmenu = "NA";
+                                        input_submenu = "NA";
+                                        input_subsubmenu = "NA";
+                                    } else if (input_subsubmenu.Equals("1")) {
+                                        // User would like to return to the staff menu
+                                        input_mainmenu = "1";
+                                        input_submenu = "NA";
+                                        input_subsubmenu = "NA";
+                                    }
+                                }
                             }
                         }
                     }
@@ -423,19 +620,22 @@ namespace NotBlockbuster {
                 }
             }
 
-            //// Check to see if deleting works properly
-            //movie_collec.printBST(movie_collec.root); // Print the BST structure to the console
-            //movie_collec.deletemovie("H");            // Delete movie my title
+            //Console.WriteLine(movie_collec.SearchMovie("Jaws").ToString());
+            //movie_collec.PrintBST(movie_collec.root); // Print the BST structure to the console
+            //Console.WriteLine(movie_collec.SearchMovie("Django Unchained").ToString());
+            //movie_collec.DeleteMovie("Django Unchained"); // Delete movie my title
             //movie_collec.PrintBST(movie_collec.root); // Print the BST structure to the console
 
-            //// Create member objects
-            //Member neco = new Member("Neco", "6 Mossglen Close", "0401267646");
-            //Member lach = new Member("Lachlan", "Far far away", "0000");
-            //// Add members to the array
-            //member_collec.AddMember(neco);
-            //member_collec.AddMember(lach);
-            //Console.WriteLine(member_collec.members[0].ToString());
-            //Console.WriteLine(member_collec.members[1].ToString());
+            // TODO: what happens if you search for a movie that doesn't exist
+
+
+            //if (member_collec.SearchMember("peter", "kriel") == null) { Console.WriteLine("This member doesn't exist.\n"); }
+            //else { Console.WriteLine("This member exists!\n"); }
+
+            //member_collec.PrintActiveMembers();
+
+
+
         }
     }
 }
