@@ -50,16 +50,14 @@ namespace NotBlockbuster {
 
         // Print movie properties
         public override string ToString() {
-            return $@"Movie Details:
-                Title: {Title}
-                Genre: {Genre}
-                Classification: {Classification}
-                Director: {Director}
-                Stars: {Starring}
-                Duration: {Duration}
-                Release Date: {ReleaseDate.ToShortDateString()}
-                Number of Copies: {NumAvCopies}
-                ";
+            return  "Title: " + Title +
+                    "\n\t\t Genre: " + Genre + 
+                    "\n\t\t Classification: " + Classification + 
+                    "\n\t\t Director: " + Director + 
+                    "\n\t\t Stars: " + Starring + 
+                    "\n\t\t Duration: " + Duration +
+                    "\n\t\t Release Date: " + ReleaseDate.ToShortDateString() + 
+                    "\n\t\t Number of Copies: " + NumAvCopies;
         }
 
         // Define movie comparitor

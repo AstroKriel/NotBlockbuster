@@ -121,7 +121,7 @@ namespace NotBlockbuster {
         // Entry point for printing all movies in the library
         public void PrintAllMoviesInOrder() {
             // Print the list of movie titles
-            Console.WriteLine("All movies in the library:\n");
+            Console.WriteLine("All movies in the library:");
             PrintInOrder(root);
             Console.Write("\n");
         }
@@ -136,9 +136,9 @@ namespace NotBlockbuster {
                     if (root.left.movie.Title.ToLower()[0] < root.movie.Title.ToLower()[0]) {
                         Console.WriteLine("-- {0} --", root.movie.Title.ToUpper()[0]);
                     }
-                }
+                } else { Console.Write("\n"); }
                 // Print the current node's movie title
-                Console.WriteLine("\t- '{0}' with {1} number of copies", root.movie.Title, root.movie.NumAvCopies);
+                Console.WriteLine("\t- {0}", root.movie.ToString());
                 // Print the node to the right's movie title
                 PrintInOrder(root.right);
             }

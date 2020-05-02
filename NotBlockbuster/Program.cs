@@ -929,15 +929,6 @@ namespace NotBlockbuster {
             }
 
             // TODO: what happens if you search for a movie that doesn't exist
-
-
-            //if (member_collec.SearchMember("peter", "kriel") == null) { Console.WriteLine("This member doesn't exist.\n"); }
-            //else { Console.WriteLine("This member exists!\n"); }
-
-            //member_collec.PrintActiveMembers();
-
-
-
         }
     }
 }
