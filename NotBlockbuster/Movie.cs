@@ -26,7 +26,8 @@ namespace NotBlockbuster {
         }
 
         // Movie object constructor
-        public Movie(string title, Genres genre, Classifications classification, string director, string starring, int duration, DateTime releaseDate, int numCopies) {
+        public Movie(   string title, Genres genre, Classifications classification, string director,
+                        string starring, int duration, DateTime releaseDate, int numCopies) {
             Title = title;
             Genre = genre; // TODO: list
             Classification = classification;
@@ -63,6 +64,6 @@ namespace NotBlockbuster {
 
         // Define movie comparitor
         // Returns (-1) if prior is smaller, (+1) if prior is larger, (0) if equal.
-        public int CompareTo(Movie other) { return string.Compare(this.Title, other.Title); }
+        public int CompareTo(Movie other) { return string.Compare(this.Title.ToLower(), other.Title.ToLower()); }
     }
 }

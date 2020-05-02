@@ -28,7 +28,7 @@ namespace NotBlockbuster {
 
         public void PrintActiveMembers() {
             Console.WriteLine("List of active member's usernames:");
-            for (int i = 0; i < ActiveMembers; i++) { Console.WriteLine("\t- " + ListMembers[i].Username); }
+            for (int i = 0; i < ActiveMembers; i++) { Console.WriteLine("\t- {0}", ListMembers[i].Username); }
             Console.Write("\n");
         }
     }

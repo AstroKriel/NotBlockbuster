@@ -91,6 +91,9 @@ namespace NotBlockbuster {
 
         public int LABEL_SPACE = 10;
 
+        // Create horintal space in the console
+        public void PrintSpacing(int space) { for (int i = LABEL_SPACE; i < space; i++) { Console.Write(" "); } }
+
         // Print the BST using reverse inorder traversal
         public void PrintNode(Node root, int space) {
             // If the current node doesn't exist
@@ -101,12 +104,9 @@ namespace NotBlockbuster {
             PrintNode(root.right, space);
             // Print current node after spaces
             Console.Write("\n");
-            for (int i = LABEL_SPACE; i < space; i++) { Console.Write(" "); } // create horintal space
-            Console.Write("  /\n");
-            for (int i = LABEL_SPACE; i < space; i++) { Console.Write(" "); } // create horintal space
-            Console.Write("(" + (space / LABEL_SPACE) + ") "+ root.movie.Title + "\n");
-            for (int i = LABEL_SPACE; i < space; i++) { Console.Write(" "); } // create horintal space
-            Console.Write("  \\ \n");
+            PrintSpacing(space); Console.Write("  /\n");
+            PrintSpacing(space); Console.Write("(" + (space / LABEL_SPACE) + ") "+ root.movie.Title + "\n");
+            PrintSpacing(space); Console.Write("  \\ \n");
             // Process the left branch
             PrintNode(root.left, space);
         }
@@ -116,6 +116,32 @@ namespace NotBlockbuster {
             Console.WriteLine("The Binary Search Tree:");
             PrintNode(root, 0); // start the tree with no indentation
             Console.WriteLine("\n");
+        }
+
+        // Entry point for printing all movies in the library
+        public void PrintAllMoviesInOrder() {
+            // Print the list of movie titles
+            Console.WriteLine("All movies in the library:\n");
+            PrintInOrder(root);
+            Console.Write("\n");
+        }
+
+        // Display all movies
+        public void PrintInOrder(Node root) {
+            if (root != null) {
+                // Print the node to the left's movie title
+                PrintInOrder(root.left);
+                // Print the next alphabet letter
+                if (root.left != null) {
+                    if (root.left.movie.Title.ToLower()[0] < root.movie.Title.ToLower()[0]) {
+                        Console.WriteLine("-- {0} --", root.movie.Title.ToUpper()[0]);
+                    }
+                }
+                // Print the current node's movie title
+                Console.WriteLine("\t- '{0}' with {1} number of copies", root.movie.Title, root.movie.NumAvCopies);
+                // Print the node to the right's movie title
+                PrintInOrder(root.right);
+            }
         }
     }
 }

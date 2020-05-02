@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace NotBlockbuster {
     class MainProgram {
-        /// <summary>
+        /// <summary> // TODO: write
         /// This is the main method
         /// </summary>
         /// <returns></returns>
@@ -40,6 +40,9 @@ namespace NotBlockbuster {
             return user_input;
         }
 
+        ////////////////////////////////////////////////////////////////////////
+        /// STAFF MENU
+        ////////////////////////////////////////////////////////////////////////
         public bool StaffLogin() {
             /* Staff Login
              * Returns a flag indicating if the staff login was successful.
@@ -297,7 +300,7 @@ namespace NotBlockbuster {
                     Console.WriteLine("Could not remove the movie. The movie '" + user_input + "' does not exist in the database.\n");
                     Console.WriteLine("You have {0} remaining tries.", user_tries);
                 }
-                Console.Write("\tTitle: ");
+                Console.Write("\t Title: ");
                 // Receive user input
                 user_input = Console.ReadLine().ToLower();
                 // If the user's input is incorrect, display so when the menu is re-drawn
@@ -337,6 +340,7 @@ namespace NotBlockbuster {
             string last_name;
             string address;
             string contact_number;
+            string password;
             int temp_num;
             string user_input = "NA";
             bool bool_first_entry = true;
@@ -371,12 +375,18 @@ namespace NotBlockbuster {
                 do { Console.Write("\t Contact number: ");
                     contact_number = Console.ReadLine();
                 } while ( !int.TryParse(contact_number, out temp_num) || (Convert.ToInt32(temp_num) < 0));
+                // 5. Member's password
+                // Perform the loop until the user has input a string
+                do { Console.Write("\t Password: ");
+                    password = Console.ReadLine();
+                } while (password.Length == 0);
                 // Check the details are correct
                 Console.WriteLine("\nThe member details you entered are:");
                 Console.WriteLine($@"Member Details:
                     Name: {first_name} {last_name}
                     Address: {address}
                     Contact Number: {contact_number}
+                    Password: {password}
                     ");
                 // Perform this loop until the user has chosen a valid option
                 do {Console.Write("Are the member's DETAILS correct? (Y)es / (N)o / (0 to cancel): ");
@@ -391,7 +401,7 @@ namespace NotBlockbuster {
             if (user_input.Equals("y")) {
                 if (member_collec.SearchMember(first_name, last_name) == null) {
                     // If the member doesn't exist
-                    member_collec.AddMember(new Member( first_name, last_name, address, contact_number) );
+                    member_collec.AddMember(new Member(first_name, last_name, address, contact_number, password) );
                 } else {
                     // If the member exists, don't add the member
                     Console.WriteLine("Could not add the memeber. A member already exists with this name.");
@@ -473,14 +483,286 @@ namespace NotBlockbuster {
             return "1";
         }
 
+        ////////////////////////////////////////////////////////////////////////
+        /// MEMBER MENU
+        ////////////////////////////////////////////////////////////////////////
+        public int MemberLogin(MemberCollection member_collec) {
+            /* Member Login
+             * Returns the index to the member or a negative number to flag an unsucessful login.
+             */
+            // Initialise important variables
+            int user_tries = 5;
+            int member_index = -1;
+            string user_id;
+            string user_pw;
+            bool bool_first_entry = true;
+            bool member_exists = false;
+            // Perform the loop until the user has chosen a valid option
+            do {// Clear the screen
+                Console.Clear();
+                // Display the login menu
+                Console.WriteLine("Welcome to Blockbuster's Community Library");
+                Console.WriteLine("============== Member Login ==============");
+                Console.WriteLine("\t Username and password is case insensitive.");
+                Console.WriteLine("\t To cancel login:");
+                Console.WriteLine("\t Set username or password to '0'");
+                Console.WriteLine("==========================================\n");
+                Console.WriteLine("Please enter your member login details (or '0' to return to the main menu).");
+                // Let the user know that their login failed
+                if (!bool_first_entry) {
+                    Console.WriteLine("\nIncorrect username and password combination.");
+                    Console.WriteLine("You have {0} remaining tries.\n", user_tries);
+                }
+                // Receive the user's username
+                Console.Write("Enter Username: ");
+                user_id = Console.ReadLine().ToLower();
+                // Receive the user's password
+                Console.Write("Enter Password: ");
+                user_pw = Console.ReadLine().ToLower();
+                // If the user's input is incorrect, display so when the menu is re-drawn
+                bool_first_entry = false;
+                // If the user chooses to cancel logging in
+                if (string.Equals(user_id, "0") || string.Equals(user_pw, "0")) { return -1; }
+                // Check that the password and username combination exists for a user
+                for (int i = 0; i < member_collec.ActiveMembers; i++) {
+                    if (    user_id.Equals(member_collec.ListMembers[i].Username.ToLower()) &&
+                            user_pw.Equals(member_collec.ListMembers[i].Password.ToLower()) ) {
+                        member_exists = true;
+                        member_index = i;
+                        break;
+                    }
+                }
+                // Check to see if the user has exceeded the maximum number of allowable unsucessful tries
+                if (--user_tries < 1) {
+                    Console.WriteLine("You entered the wrong login details too many time.");
+                    return -1; // return that the login failed, and send the user to main menu
+                }
+            } while (!member_exists);
+            // If the member exists, then return the index for that member in the array of members
+            return member_index;
+        }
+
+        public string MemberMenu() {
+            /* Member Menu
+             * Returns the users option:
+             * 1: Display all movies
+             * 2: Borrow a movie
+             * 3: Return a movie
+             * 4: List current borrowed movies
+             * 5: Display top 10 most popular movies
+             * 0: Return to the main menu
+             */
+            // Initialise important varbiales
+            string user_input = "NA";
+            bool bool_first_entry = true;
+            // Perform the loop until the user has chosen a valid option
+            do {// Clear the screen
+                Console.Clear();
+                // Display the main menu options
+                Console.WriteLine("============== Member Menu ===============");
+                Console.WriteLine("\t 1. Display all movies");
+                Console.WriteLine("\t 2. Borrow a movie");
+                Console.WriteLine("\t 3. Return a movie");
+                Console.WriteLine("\t 4. List current borrowed movie DVDs");
+                Console.WriteLine("\t 5. Display top 10 most popular movies");
+                Console.WriteLine("\t 0. Return to the main menu");
+                Console.WriteLine("==========================================\n");
+                // Display that the previous input was not correct
+                if (!bool_first_entry) { Console.WriteLine("Your choice of {0} was not a valid option.", user_input); }
+                // If the user's input is incorrect, display so when the menu is re-drawn
+                bool_first_entry = false;
+                // Receive user input
+                Console.Write("Please choose from (1-5, or '0' to return to the main menu): ");
+                user_input = Console.ReadLine();
+            } while (!( user_input.Equals("0") || user_input.Equals("1") || user_input.Equals("2") ||
+                        user_input.Equals("3") || user_input.Equals("4") || user_input.Equals("5") ));
+            return user_input;
+        }
+
+        public void MemberDisplayMovies(MovieCollection movie_collec) {
+            // Clear the screen
+            Console.Clear();
+            // Display all the movies
+            Console.WriteLine("=========== Display all Movies ===========");
+            movie_collec.PrintAllMoviesInOrder();
+            // Ask user when they would like to leave the page
+            Console.WriteLine("Press any key when you would like to return to the member menu.");
+            Console.ReadKey();
+        }
+
+        public string MemberBorrowMovie(Member member, MovieCollection movie_collec) {
+            /* Borrow Movie
+             * Returns:
+             * 2: Borrow another movie
+             * 1: Return to the member menu
+             * 0: Return to the main menu
+             */
+             // Initialise important variables
+            Movie movie_to_borrow;
+            int user_tries = 5;
+            string user_input = "NA";
+            bool bool_first_entry = true;
+            bool bool_can_rent_movie = true;
+            // Perform the loop until the user has chosen a valid option
+            do {// Clear the screen
+                Console.Clear();
+                // Display the main menu options
+                Console.WriteLine("============= Borrow a Movie =============");
+                Console.WriteLine("\t Enter the movie's title.");
+                Console.WriteLine("\t 1. Return to member menu.");
+                Console.WriteLine("\t 0. Return to main menu.");
+                Console.WriteLine("==========================================\n");
+                Console.WriteLine("Please enter the movie's title (or choose option '1' or '0').");
+                // Display that the previous input was not correct
+                if (!bool_first_entry) {
+                    Console.WriteLine("Could not find the movie. The movie '" + user_input + "' does not exist in the database.\n");
+                    Console.WriteLine("You have {0} remaining tries.", user_tries); // TODO: write all console messages like so
+                }
+                Console.Write("\t Title: ");
+                // Receive user input
+                user_input = Console.ReadLine().ToLower();
+                // If the user's input is incorrect, display so when the menu is re-drawn
+                bool_first_entry = false;
+                // Check to see if the user has exceeded the maximum number of allowable unsucessful tries
+                if (--user_tries < 1) {
+                    Console.WriteLine("The movie are looking for is not in the database.");
+                    return "1"; // return the user to the member menu
+                }
+            } while (!( user_input.Equals("0") || user_input.Equals("1") ) && ( movie_collec.SearchMovie(user_input) == null ));
+            // If the user is asking to return to the main menu
+            if (user_input.Equals("0")) { return "0"; }
+            // If the user is asking to return to the member menu
+            else if (user_input.Equals("1")) { return "1"; }
+            // Check that the user would like to borrow the movie
+            // Perform this loop until the user has chosen a valid option
+            movie_to_borrow = movie_collec.SearchMovie(user_input);
+            do {Console.Write("Are you sure you would like to rent '{0}'? (Y)es / (N)o: ", movie_to_borrow.Title);
+                user_input = Console.ReadLine().ToLower();
+            } while (!( user_input.Equals("y") || user_input.Equals("n") ));
+            // If the user would like to borrow the movie, then check that the movie has a free copy
+            if (user_input.Equals("y")) {
+                if (movie_to_borrow.NumAvCopies > 0) {
+                    // Check that the member isn't already renting the movie
+                    foreach (Movie movie in member.BorrowedMovies) {
+                        // If the movie is already in the list of borrowed movies, then cancel rent
+                        if (movie_to_borrow.CompareTo(movie) == 0) {
+                            Console.WriteLine("You are already renting the movie '{0}'. You can only rent one copy at a time.\n", movie_to_borrow.Title);
+                            bool_can_rent_movie = false;
+                            break;
+                        }
+                    }
+                    // Otherwise, borrow the movie
+                    if (bool_can_rent_movie) {
+                        member.BorrowMovie(movie_to_borrow); // add movie to user's list
+                    }
+                } else { Console.WriteLine("Sorry, there aren't any available copies of this movies at the momemnt.\n"); }
+            }
+            // Check if the user would like to borrow another movie
+            // Perform this loop until the user has chosen a valid option
+            do {Console.Write("Would you like to BORROW another movie? (Y)es / (N)o: ");
+                user_input = Console.ReadLine().ToLower();
+            } while (!( user_input.Equals("y") || user_input.Equals("n") ));
+            // If the user would like to borrow another movie, then stay on the BORROW MOVIE menu
+            if (string.Equals(user_input, "y")) { return "2"; }
+            // Otherwise, return to the member menu
+            return "1";
+        }
+
+        public string MemberReturnMovie(Member member, MovieCollection movie_collec) {
+            /* Return Movie
+             * Returns:
+             * 2: Return another movie
+             * 1: Return to the member menu
+             * 0: Return to the main menu
+             */
+             // Initialise important variables
+            Movie movie_to_return;
+            int user_tries = 5;
+            string user_input = "NA";
+            bool bool_first_entry = true;
+            bool bool_could_return = false;
+            // Perform the loop until the user has chosen a valid option
+            do {// Clear the screen
+                Console.Clear();
+                // Display the main menu options
+                Console.WriteLine("============= Return a Movie =============");
+                Console.WriteLine("\t Enter the movie's title.");
+                Console.WriteLine("\t 1. Return to member menu.");
+                Console.WriteLine("\t 0. Return to main menu.");
+                Console.WriteLine("==========================================\n");
+                Console.WriteLine("Please enter the movie's title (or choose option '1' or '0').");
+                // Display that the previous input was not correct
+                if (!bool_first_entry) {
+                    Console.WriteLine("Could not find the movie. The movie '" + user_input + "' does not exist in the database.\n");
+                    Console.WriteLine("You have {0} remaining tries.", user_tries); // TODO: write all console messages like so
+                }
+                Console.Write("\t Title: ");
+                // Receive user input
+                user_input = Console.ReadLine().ToLower();
+                // If the user's input is incorrect, display so when the menu is re-drawn
+                bool_first_entry = false;
+                // Check to see if the user has exceeded the maximum number of allowable unsucessful tries
+                if (--user_tries < 1) {
+                    Console.WriteLine("The movie are trying to return is not in the database.");
+                    return "1"; // return the user to the member menu
+                }
+            } while (!( user_input.Equals("0") || user_input.Equals("1") ) && ( movie_collec.SearchMovie(user_input) == null ));
+            // If the user is asking to return to the main menu
+            if (user_input.Equals("0")) { return "0"; }
+            // If the user is asking to return to the member menu
+            else if (user_input.Equals("1")) { return "1"; }
+            movie_to_return = movie_collec.SearchMovie(user_input);
+            // Make the user confirm that they would like to return the movie
+            do {Console.Write("Are you sure you would like to return '{0}'? (Y)es / (N)o: ", movie_to_return.Title);
+                user_input = Console.ReadLine().ToLower();
+            } while (!( user_input.Equals("y") || user_input.Equals("n") ));
+            // If the user would like to return the movie, then check that they are currently renting the movie
+            if (user_input.Equals("y")) {
+                // Check that the user is renting the movie
+                foreach (Movie movie in member.BorrowedMovies) {
+                    // If the movie is already in the list of borrowed movies, then return it
+                    if (movie_to_return.CompareTo(movie) == 0) {
+                        member.ReturnMovie(movie_to_return); // add movie to user's list
+                        bool_could_return = true;
+                        break;
+                    }
+                }
+                // If the movie was not in the user's list of currently renting, then let them know
+                if (!bool_could_return) { Console.WriteLine("You aren't currently renting {0}, so could not return the movie.\n", movie_to_return.Title); }
+            }
+            // Check if the user would like to return another movie
+            // Perform this loop until the user has chosen a valid option
+            do {Console.Write("Would you like to RETURN another movie? (Y)es / (N)o: ");
+                user_input = Console.ReadLine().ToLower();
+            } while (!( user_input.Equals("y") || user_input.Equals("n") ));
+            // If the user would like to return another movie, then stay on the BORROW MOVIE menu
+            if (string.Equals(user_input, "y")) { return "2"; }
+            // Otherwise, return to the member menu
+            return "1";
+        }
+
+        public void MemberDisplayRenting(Member member) {
+            // Clear the screen
+            Console.Clear();
+            // Display all the currently renting movies
+            Console.WriteLine("== Display all Currently Renting Movies ==");
+            member.DisplayCurrentlyRenting();
+            // Ask user when they would like to leave the page
+            Console.WriteLine("Press any key when you would like to return to the member menu.");
+            Console.ReadKey();
+        }
+
+        ////////////////////////////////////////////////////////////////////////
+        /// MAIN PROGRAM
+        ////////////////////////////////////////////////////////////////////////
         public static void Main() {
             // Initialise the Binary Search Tree (BST)
             MovieCollection movie_collec = new MovieCollection();
             // Create movie objects
-            Movie django = new Movie("Django Unchained", Movie.Genres.Action, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "Leonardo DiCaprio", 165, new DateTime(24/01/2013), 11);
-            Movie pulp = new Movie("Pulp Fiction", Movie.Genres.Adventure, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "John Travolta", 178, new DateTime(24/11/1994), 8);
-            Movie bugs = new Movie("A Bug's Life", Movie.Genres.Animated, Movie.Classifications.General, "John Lasseter", "Dave Foley", 95, new DateTime(3/121998), 3);
-            Movie jaws = new Movie("Jaws", Movie.Genres.Thriller, Movie.Classifications.Mature, "Steven Spielberg", "Shark", 130, new DateTime(27/11/1975), 4);
+            Movie django = new Movie("Django", Movie.Genres.Action, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "Leonardo DiCaprio", 165, new DateTime(24/01/2013), 11);
+            Movie pulp = new Movie("Pulp", Movie.Genres.Adventure, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "John Travolta", 178, new DateTime(24/11/1994), 8);
+            Movie bugs = new Movie("Bug", Movie.Genres.Animated, Movie.Classifications.General, "John Lasseter", "Dave Foley", 95, new DateTime(3/121998), 2);
+            Movie jaws = new Movie("Jaws", Movie.Genres.Thriller, Movie.Classifications.Mature, "Steven Spielberg", "Shark", 130, new DateTime(27/11/1975), 1);
             // Add movies to the BST
             movie_collec.InsertMovie(django);
             movie_collec.InsertMovie(pulp);
@@ -489,8 +771,8 @@ namespace NotBlockbuster {
 
             // Initialise the array of members
             MemberCollection member_collec = new MemberCollection();
-            Member neco = new Member("Neco", "Kriel", "6 Mossglen Close", "0401267646");
-            Member bill = new Member("Bill", "Phillips", "7th Corner Street", "0401267646");
+            Member neco = new Member("Neco", "Kriel", "6 Mossglen Close", "0401267646", "pass");
+            Member bill = new Member("Bill", "peter", "7th Corner Street", "0401267646", "pass");
             // Add members to the array
             member_collec.AddMember(neco);
             member_collec.AddMember(bill);
@@ -500,16 +782,19 @@ namespace NotBlockbuster {
             string input_mainmenu = "NA"; // main menu option
             string input_submenu = "NA"; // sub-menu option
             string input_subsubmenu = "NA"; // sub-sub-menu option
+            int member_index = -1;
             // Start the Program
             while (true) {
                 // Display main menu
                 input_mainmenu = mainProgram.MainMenu();
                 // Follow up on the user's menu selection
                 if (input_mainmenu.Equals("0")) {
+                    ///////////////////////////////////////
                     // If user chose to exit
                     Console.WriteLine("Shutting down...");
                     return;
                 } else if (input_mainmenu.Equals("1")) {
+                    ///////////////////////////////////////
                     // User chose to use staff menu
                     // Verify they can log in
                     if (mainProgram.StaffLogin()) {
@@ -519,9 +804,7 @@ namespace NotBlockbuster {
                             input_submenu = mainProgram.StaffMenu();
                             if (input_submenu.Equals("0")) {
                                 // if the user chose to return to the main menu
-                                input_mainmenu = "NA";
-                                input_submenu = "NA";
-                                input_subsubmenu = "NA";
+                                input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA";
                             } else if (input_submenu.Equals("1")) {
                                 // if the user chose to add a movie
                                 while (input_submenu.Equals("1")) {
@@ -531,19 +814,12 @@ namespace NotBlockbuster {
                                      * 0. return to the main menu
                                      */
                                     input_subsubmenu = mainProgram.StaffAddMovie(movie_collec);
-                                    if (input_subsubmenu.Equals("0")) {
-                                        // User would like to return to the main menu
-                                        input_mainmenu = "NA";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    } else if (input_subsubmenu.Equals("1")) {
-                                        // User would like to return to the staff menu
-                                        input_mainmenu = "1";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    }
+                                    // User would like to return to the main menu
+                                    if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                    // User would like to return to the staff menu
+                                    else if (input_subsubmenu.Equals("1")) { input_mainmenu = "1"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // Print the BST structure to the console
-                                    movie_collec.PrintBST(movie_collec.root);
+                                    movie_collec.PrintBST(movie_collec.root); // TODO: remove
                                     Console.ReadLine();
                                 }
                             } else if (input_submenu.Equals("2")) {
@@ -555,19 +831,12 @@ namespace NotBlockbuster {
                                      * 0. return to the main menu
                                      */
                                     input_subsubmenu = mainProgram.StaffDeleteMovie(movie_collec);
-                                    if (input_subsubmenu.Equals("0")) {
-                                        // User would like to return to the main menu
-                                        input_mainmenu = "NA";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    } else if (input_subsubmenu.Equals("1")) {
-                                        // User would like to return to the staff menu
-                                        input_mainmenu = "1";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    }
+                                    // User would like to return to the main menu
+                                    if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                    // User would like to return to the staff menu
+                                    else if (input_subsubmenu.Equals("1")) { input_mainmenu = "1"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // Print the BST structure to the console
-                                    movie_collec.PrintBST(movie_collec.root);
+                                    movie_collec.PrintBST(movie_collec.root); // TODO: remove
                                     Console.ReadLine();
                                 }
                             } else if (input_submenu.Equals("3")) {
@@ -579,17 +848,10 @@ namespace NotBlockbuster {
                                      * 0. return to the main menu
                                      */
                                     input_subsubmenu = mainProgram.StaffAddMember(member_collec);
-                                    if (input_subsubmenu.Equals("0")) {
-                                        // User would like to return to the main menu
-                                        input_mainmenu = "NA";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    } else if (input_subsubmenu.Equals("1")) {
-                                        // User would like to return to the staff menu
-                                        input_mainmenu = "1";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    }
+                                    // User would like to return to the main menu
+                                    if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                    // User would like to return to the staff menu
+                                    else if (input_subsubmenu.Equals("1")) { input_mainmenu = "1"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                 }
                             } else if (input_submenu.Equals("4")) {
                                 // If the user chose to search for a member's phone number
@@ -600,31 +862,71 @@ namespace NotBlockbuster {
                                      * 0. return to the main menu
                                      */
                                     input_subsubmenu = mainProgram.StaffSearchMemberNumber(member_collec);
-                                    if (input_subsubmenu.Equals("0")) {
-                                        // User would like to return to the main menu
-                                        input_mainmenu = "NA";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    } else if (input_subsubmenu.Equals("1")) {
-                                        // User would like to return to the staff menu
-                                        input_mainmenu = "1";
-                                        input_submenu = "NA";
-                                        input_subsubmenu = "NA";
-                                    }
+                                    // User would like to return to the main menu
+                                    if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                    // User would like to return to the staff menu
+                                    else if (input_subsubmenu.Equals("1")) { input_mainmenu = "1"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                 }
                             }
                         }
                     }
                 } else {
+                    ///////////////////////////////////////
                     // Otherwise, user chose to use member login
+                    // Verify that the user can log-in
+                    member_index = mainProgram.MemberLogin(member_collec);
+                    if (member_index >= 0) {
+                        // Stay on the member menu until the user asks to leave
+                        while (string.Equals(input_mainmenu, "2")) {
+                            // Which sub-menu would the user like to enter?
+                            input_submenu = mainProgram.MemberMenu();
+                            if (input_submenu.Equals("0")) {
+                                // If the user chose to return to the main menu
+                                input_mainmenu = "NA";
+                                input_submenu = "NA";
+                                input_subsubmenu = "NA";
+                            } else if (input_submenu.Equals("1")) {
+                                // If the user chose to display all movies
+                                mainProgram.MemberDisplayMovies(movie_collec);
+                            } else if (input_submenu.Equals("2")) {
+                                // If the user chose to borrow a movie
+                                while (input_submenu.Equals("2")) {
+                                    /* Would the user like to:
+                                     * 2. borrow another movie
+                                     * 1. return to the staff menu
+                                     * 0. return to the main menu
+                                     */
+                                    input_subsubmenu = mainProgram.MemberBorrowMovie(member_collec.ListMembers[member_index], movie_collec);
+                                    // User would like to return to the main menu
+                                    if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                    // User would like to return to the member menu
+                                    else if (input_subsubmenu.Equals("1")) { input_mainmenu = "2"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                }
+                            } else if (input_submenu.Equals("3")) {
+                                // If the user chose to return a movie
+                                while (input_submenu.Equals("3")) {
+                                    /* Would the user like to:
+                                     * 2. return another movie
+                                     * 1. return to the staff menu
+                                     * 0. return to the main menu
+                                     */
+                                    input_subsubmenu = mainProgram.MemberReturnMovie(member_collec.ListMembers[member_index], movie_collec);
+                                    // User would like to return to the main menu
+                                    if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                    // User would like to return to the member menu
+                                    else if (input_subsubmenu.Equals("1")) { input_mainmenu = "2"; input_submenu = "NA"; input_subsubmenu = "NA"; }
+                                }
+                            } else if (input_submenu.Equals("4")) {
+                                // If the user chose to list all borrowed movies
+                                mainProgram.MemberDisplayRenting(member_collec.ListMembers[member_index]);
+                            } else if (input_submenu.Equals("5")) {
+                                // If the user chose to display all popular movies
+                                Console.WriteLine("Still to be implemented...");
+                            }
+                        }
+                    }
                 }
             }
-
-            //Console.WriteLine(movie_collec.SearchMovie("Jaws").ToString());
-            //movie_collec.PrintBST(movie_collec.root); // Print the BST structure to the console
-            //Console.WriteLine(movie_collec.SearchMovie("Django Unchained").ToString());
-            //movie_collec.DeleteMovie("Django Unchained"); // Delete movie my title
-            //movie_collec.PrintBST(movie_collec.root); // Print the BST structure to the console
 
             // TODO: what happens if you search for a movie that doesn't exist
 
