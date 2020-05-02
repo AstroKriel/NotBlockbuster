@@ -639,8 +639,14 @@ namespace NotBlockbuster {
             do {Console.Write("Are you sure you would like to rent '{0}'? (Y)es / (N)o: ", movie_to_borrow.Title);
                 user_input = Console.ReadLine().ToLower();
             } while (!( user_input.Equals("y") || user_input.Equals("n") ));
-            // If the user would like to borrow the movie, then check that the movie has a free copy
+            // If the user would like to borrow the movie
             if (user_input.Equals("y")) {
+                // If the user has reached the max number of rentable movies, then they aren't allowed to rent any more
+                if (member.BorrowedMovies.Count > 10) {
+                    Console.WriteLine("You have reached the maximum number (10) of movies you are allowed to rent.");
+                    return "1"; // return the user to the member menu
+                }
+                // Otherwise, check that the movie has available copies to borrow
                 if (movie_to_borrow.NumAvCopies > 0) {
                     // Check that the member isn't already renting the movie
                     foreach (Movie movie in member.BorrowedMovies) {
@@ -818,9 +824,6 @@ namespace NotBlockbuster {
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the staff menu
                                     else if (input_subsubmenu.Equals("1")) { input_mainmenu = "1"; input_submenu = "NA"; input_subsubmenu = "NA"; }
-                                    // Print the BST structure to the console
-                                    movie_collec.PrintBST(movie_collec.root); // TODO: remove
-                                    Console.ReadLine();
                                 }
                             } else if (input_submenu.Equals("2")) {
                                 // If the user chose to remove a movie
@@ -835,9 +838,6 @@ namespace NotBlockbuster {
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the staff menu
                                     else if (input_subsubmenu.Equals("1")) { input_mainmenu = "1"; input_submenu = "NA"; input_subsubmenu = "NA"; }
-                                    // Print the BST structure to the console
-                                    movie_collec.PrintBST(movie_collec.root); // TODO: remove
-                                    Console.ReadLine();
                                 }
                             } else if (input_submenu.Equals("3")) {
                                 // If the user chose to register a new member
@@ -927,8 +927,6 @@ namespace NotBlockbuster {
                     }
                 }
             }
-
-            // TODO: what happens if you search for a movie that doesn't exist
         }
     }
 }
