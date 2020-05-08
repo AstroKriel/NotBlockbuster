@@ -9,7 +9,7 @@ namespace NotBlockbuster {
         /// This is the main method
         /// </summary>
         /// <returns></returns>
-        public string MainMenu() {
+        static public string MainMenu() {
             /* Main Menu
              * Returns the users option:
              * 1: Staff Login
@@ -43,7 +43,7 @@ namespace NotBlockbuster {
         ////////////////////////////////////////////////////////////////////////
         /// STAFF MENU
         ////////////////////////////////////////////////////////////////////////
-        public bool StaffLogin() {
+        static public bool StaffLogin() {
             /* Staff Login
              * Returns a flag indicating if the staff login was successful.
              * true:  the login was successful
@@ -88,7 +88,7 @@ namespace NotBlockbuster {
             return true;
         }
 
-        public string StaffMenu() {
+        static public string StaffMenu() {
             /* Staff Menu
              * Returns the users option:
              * 1: Add a new movie DVD
@@ -123,7 +123,7 @@ namespace NotBlockbuster {
             return user_input;
         }
 
-        public string StaffAddMovie(MovieCollection movie_collec) {
+        static public string StaffAddMovie() {
             /* Add Movie
              * Returns:
              * 2: Add another movie
@@ -274,7 +274,7 @@ namespace NotBlockbuster {
             return "1";
         }
 
-        public string StaffDeleteMovie(MovieCollection movie_collec) { // TODO: remove movie from all users
+        static public string StaffDeleteMovie() { // TODO: remove movie from all users
             /* Delete Movie
              * Returns:
              * 2: Remove another movie
@@ -328,7 +328,7 @@ namespace NotBlockbuster {
             return "1";
         }
 
-        public string StaffAddMember(MemberCollection member_collec) {
+        static public string StaffAddMember() {
             /* Add Member
              * Returns:
              * 2: Add another member
@@ -418,7 +418,7 @@ namespace NotBlockbuster {
             return "1";
         }
 
-        public string StaffSearchMemberNumber(MemberCollection member_collec) {
+        static public string StaffSearchMemberNumber() {
             /* Find Member Number
              * Returns:
              * 2: Find another member's number
@@ -486,7 +486,7 @@ namespace NotBlockbuster {
         ////////////////////////////////////////////////////////////////////////
         /// MEMBER MENU
         ////////////////////////////////////////////////////////////////////////
-        public int MemberLogin(MemberCollection member_collec) {
+        static public int MemberLogin() {
             /* Member Login
              * Returns the index to the member or a negative number to flag an unsucessful login.
              */
@@ -542,7 +542,7 @@ namespace NotBlockbuster {
             return member_index;
         }
 
-        public string MemberMenu() {
+        static public string MemberMenu() {
             /* Member Menu
              * Returns the users option:
              * 1: Display all movies
@@ -579,7 +579,7 @@ namespace NotBlockbuster {
             return user_input;
         }
 
-        public void MemberDisplayMovies(MovieCollection movie_collec) {
+        static public void MemberDisplayMovies() {
             // Clear the screen
             Console.Clear();
             // Display all the movies
@@ -590,7 +590,7 @@ namespace NotBlockbuster {
             Console.ReadKey();
         }
 
-        public string MemberBorrowMovie(Member member, MovieCollection movie_collec) {
+        static public string MemberBorrowMovie(Member member) {
             /* Borrow Movie
              * Returns:
              * 2: Borrow another movie
@@ -674,7 +674,7 @@ namespace NotBlockbuster {
             return "1";
         }
 
-        public string MemberReturnMovie(Member member, MovieCollection movie_collec) {
+        static public string MemberReturnMovie(Member member) {
             /* Return Movie
              * Returns:
              * 2: Return another movie
@@ -747,7 +747,7 @@ namespace NotBlockbuster {
             return "1";
         }
 
-        public void MemberDisplayRenting(Member member) {
+        static public void MemberDisplayRenting(Member member) {
             // Clear the screen
             Console.Clear();
             // Display all the currently renting movies
@@ -758,12 +758,18 @@ namespace NotBlockbuster {
             Console.ReadKey();
         }
 
+        // GLOBAL VARIABLE
+        static public MovieCollection movie_collec;
+        static public MemberCollection member_collec;
+
         ////////////////////////////////////////////////////////////////////////
         /// MAIN PROGRAM
         ////////////////////////////////////////////////////////////////////////
         public static void Main() {
             // Initialise the Binary Search Tree (BST)
-            MovieCollection movie_collec = new MovieCollection();
+            movie_collec = new MovieCollection();
+            // Initialise the array of members
+            member_collec = new MemberCollection();
             // Create movie objects
             Movie django = new Movie("Django", Movie.Genres.Action, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "Leonardo DiCaprio", 165, new DateTime(24/01/2013), 11);
             Movie pulp = new Movie("Pulp", Movie.Genres.Adventure, Movie.Classifications.MatureAccompanied, "Quentin Tarantino", "John Travolta", 178, new DateTime(24/11/1994), 8);
@@ -774,9 +780,7 @@ namespace NotBlockbuster {
             movie_collec.InsertMovie(pulp);
             movie_collec.InsertMovie(bugs);
             movie_collec.InsertMovie(jaws);
-
-            // Initialise the array of members
-            MemberCollection member_collec = new MemberCollection();
+            // Create member objects
             Member neco = new Member("Neco", "Kriel", "6 Mossglen Close", "0401267646", "pass");
             Member bill = new Member("Bill", "peter", "7th Corner Street", "0401267646", "pass");
             // Add members to the array
@@ -784,7 +788,6 @@ namespace NotBlockbuster {
             member_collec.AddMember(bill);
 
             // Initialise the menu variables
-            MainProgram mainProgram = new MainProgram();
             string input_mainmenu = "NA"; // main menu option
             string input_submenu = "NA"; // sub-menu option
             string input_subsubmenu = "NA"; // sub-sub-menu option
@@ -792,7 +795,7 @@ namespace NotBlockbuster {
             // Start the Program
             while (true) {
                 // Display main menu
-                input_mainmenu = mainProgram.MainMenu();
+                input_mainmenu = MainMenu();
                 // Follow up on the user's menu selection
                 if (input_mainmenu.Equals("0")) {
                     ///////////////////////////////////////
@@ -803,11 +806,11 @@ namespace NotBlockbuster {
                     ///////////////////////////////////////
                     // User chose to use staff menu
                     // Verify they can log in
-                    if (mainProgram.StaffLogin()) {
+                    if (StaffLogin()) {
                         // Stay on the staff menu until the user asks to leave
                         while (string.Equals(input_mainmenu, "1")) {
                             // Which sub-menu would the user like to enter?
-                            input_submenu = mainProgram.StaffMenu();
+                            input_submenu = StaffMenu();
                             if (input_submenu.Equals("0")) {
                                 // if the user chose to return to the main menu
                                 input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA";
@@ -819,7 +822,7 @@ namespace NotBlockbuster {
                                      * 1. return to the staff menu
                                      * 0. return to the main menu
                                      */
-                                    input_subsubmenu = mainProgram.StaffAddMovie(movie_collec);
+                                    input_subsubmenu = StaffAddMovie();
                                     // User would like to return to the main menu
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the staff menu
@@ -833,7 +836,7 @@ namespace NotBlockbuster {
                                      * 1. return to the staff menu
                                      * 0. return to the main menu
                                      */
-                                    input_subsubmenu = mainProgram.StaffDeleteMovie(movie_collec);
+                                    input_subsubmenu = StaffDeleteMovie();
                                     // User would like to return to the main menu
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the staff menu
@@ -847,7 +850,7 @@ namespace NotBlockbuster {
                                      * 1. return to the staff menu
                                      * 0. return to the main menu
                                      */
-                                    input_subsubmenu = mainProgram.StaffAddMember(member_collec);
+                                    input_subsubmenu = StaffAddMember();
                                     // User would like to return to the main menu
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the staff menu
@@ -861,7 +864,7 @@ namespace NotBlockbuster {
                                      * 1. return to the staff menu
                                      * 0. return to the main menu
                                      */
-                                    input_subsubmenu = mainProgram.StaffSearchMemberNumber(member_collec);
+                                    input_subsubmenu = StaffSearchMemberNumber();
                                     // User would like to return to the main menu
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the staff menu
@@ -874,12 +877,12 @@ namespace NotBlockbuster {
                     ///////////////////////////////////////
                     // Otherwise, user chose to use member login
                     // Verify that the user can log-in
-                    member_index = mainProgram.MemberLogin(member_collec);
+                    member_index = MemberLogin();
                     if (member_index >= 0) {
                         // Stay on the member menu until the user asks to leave
                         while (string.Equals(input_mainmenu, "2")) {
                             // Which sub-menu would the user like to enter?
-                            input_submenu = mainProgram.MemberMenu();
+                            input_submenu = MemberMenu();
                             if (input_submenu.Equals("0")) {
                                 // If the user chose to return to the main menu
                                 input_mainmenu = "NA";
@@ -887,7 +890,7 @@ namespace NotBlockbuster {
                                 input_subsubmenu = "NA";
                             } else if (input_submenu.Equals("1")) {
                                 // If the user chose to display all movies
-                                mainProgram.MemberDisplayMovies(movie_collec);
+                                MemberDisplayMovies();
                             } else if (input_submenu.Equals("2")) {
                                 // If the user chose to borrow a movie
                                 while (input_submenu.Equals("2")) {
@@ -896,7 +899,7 @@ namespace NotBlockbuster {
                                      * 1. return to the staff menu
                                      * 0. return to the main menu
                                      */
-                                    input_subsubmenu = mainProgram.MemberBorrowMovie(member_collec.ListMembers[member_index], movie_collec);
+                                    input_subsubmenu = MemberBorrowMovie(member_collec.ListMembers[member_index]);
                                     // User would like to return to the main menu
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the member menu
@@ -910,7 +913,7 @@ namespace NotBlockbuster {
                                      * 1. return to the staff menu
                                      * 0. return to the main menu
                                      */
-                                    input_subsubmenu = mainProgram.MemberReturnMovie(member_collec.ListMembers[member_index], movie_collec);
+                                    input_subsubmenu = MemberReturnMovie(member_collec.ListMembers[member_index]);
                                     // User would like to return to the main menu
                                     if (input_subsubmenu.Equals("0")) { input_mainmenu = "NA"; input_submenu = "NA"; input_subsubmenu = "NA"; }
                                     // User would like to return to the member menu
@@ -918,7 +921,7 @@ namespace NotBlockbuster {
                                 }
                             } else if (input_submenu.Equals("4")) {
                                 // If the user chose to list all borrowed movies
-                                mainProgram.MemberDisplayRenting(member_collec.ListMembers[member_index]);
+                                MemberDisplayRenting(member_collec.ListMembers[member_index]);
                             } else if (input_submenu.Equals("5")) {
                                 // If the user chose to display all popular movies
                                 Console.WriteLine("Still to be implemented...");
