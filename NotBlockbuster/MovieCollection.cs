@@ -213,9 +213,11 @@ namespace NotBlockbuster {
             Console.WriteLine("The 10 Most Popular Movies");
             for (int i = 0; (i < array_movies.Length) && (i < 10); i++) {
                 if (array_movies[i].NumTimesRented > 1) {
-                    Console.WriteLine("({0}) \t '{1}' \t rented {2} times.", i+1, array_movies[i].Title, array_movies[i].NumTimesRented);
+                    Console.WriteLine("({0}) \t '{1}' {2} rented {3} times.", i+1, array_movies[i].Title,
+                        new string(' ', 10-array_movies[i].Title.Length), array_movies[i].NumTimesRented);
                 } else {
-                    Console.WriteLine("({0}) \t '{1}' \t rented {2} time.", i+1, array_movies[i].Title, array_movies[i].NumTimesRented);
+                    Console.WriteLine("({0}) \t '{1}' {2} rented {3} time.", i+1, array_movies[i].Title,
+                        new string(' ', 10 - array_movies[i].Title.Length), array_movies[i].NumTimesRented);
                 }
             }
         }

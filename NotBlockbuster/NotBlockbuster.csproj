@@ -37,6 +37,8 @@
     <Compile Include="Movie.cs" />
     <Compile Include="MovieCollection.cs" />
     <Compile Include="Components\Menu.cs" />
+    <Compile Include="Components\StaffMenu.cs" />
+    <Compile Include="Components\MemberMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\" />

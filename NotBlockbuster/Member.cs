@@ -55,7 +55,10 @@ namespace NotBlockbuster {
 
         public void PrintCurrentlyRenting() {
             Console.WriteLine("List of movies you are currently renting:");
-            if (BorrowedMovies.Count > 0) { foreach (Movie movie in BorrowedMovies) { Console.WriteLine("\t- " + movie.Title); } }
+            if (BorrowedMovies.Count > 0) {
+                int i = 1;
+                foreach (Movie movie in BorrowedMovies) { Console.WriteLine("\t ({0}) {1}", i++, movie.Title); }
+            }
             else { Console.WriteLine("You do not have any outstanding movies at the moment."); }
             Console.Write("\n");
         }

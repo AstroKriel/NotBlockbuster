@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections; // for non-core functionality
 
 namespace NotBlockbuster {
     public class Movie : IComparable<Movie> {
@@ -23,18 +24,32 @@ namespace NotBlockbuster {
             MatureAccompanied
         }
 
+        // Create variable to store the list of currently renting movies
+        public ArrayList RentingUsers;
+
         // Movie object constructor
         public Movie(   string title, Genres genre, Classifications classification, string director,
                         string starring, int duration, DateTime releaseDate, int numCopies) {
             Title = title;
-            Genre = genre; // TODO: list
+            Genre = genre;
             Classification = classification;
-            Director = director; // TODO: full name, list
-            Starring = starring; // TODO: full name, list
+            Director = director;
+            Starring = starring;
             Duration = duration;
             ReleaseDate = releaseDate;
             NumAvCopies = numCopies;
             NumTimesRented = 0;
+            RentingUsers = new ArrayList();
+        }
+
+        // A function that adds a user to the list of users currently borrowing the movie
+        public void AddUser(Member member) {
+            RentingUsers.Add(member);
+        }
+
+        // A function that removes a user from the list of users currently borrowing the movie
+        public void RemoveUser(Member member) {
+            RentingUsers.Remove(member);
         }
 
         // Get and Set movie properties
