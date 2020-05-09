@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace NotBlockbuster {
     public class Member {
-        // Create variable to store the of list borrowed movies
+        // Create variable to store the list of currently renting movies
         public ArrayList BorrowedMovies;
 
         // Member object constructor
@@ -18,9 +18,10 @@ namespace NotBlockbuster {
         }
 
         // Define function to add movie to the list of borrowed movies
-        public void BorrowMovie(Movie movie) {
+        public void RentMovie(Movie movie) {
             BorrowedMovies.Add(movie);
             movie.NumAvCopies--; // decrement the number of available copies TODO: check this is working
+            movie.NumTimesRented++;
             Console.WriteLine("Successfully borrowed movie.\n");
         }
 
@@ -52,7 +53,7 @@ namespace NotBlockbuster {
         // Returns (-1) if prior is smaller, (+1) if prior is larger, (0) if equal.
         public int CompareTo(string other_username) { return string.Compare(this.Username.ToString().ToLower(), other_username.ToLower()); }
 
-        public void DisplayCurrentlyRenting() {
+        public void PrintCurrentlyRenting() {
             Console.WriteLine("List of movies you are currently renting:");
             if (BorrowedMovies.Count > 0) { foreach (Movie movie in BorrowedMovies) { Console.WriteLine("\t- " + movie.Title); } }
             else { Console.WriteLine("You do not have any outstanding movies at the moment."); }

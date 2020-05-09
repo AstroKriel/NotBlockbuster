@@ -2,8 +2,6 @@
 
 namespace NotBlockbuster {
     public class Movie : IComparable<Movie> {
-        // TODO: multiple occurances of the same movie
-
         // Possible movie genres
         public enum Genres {
             Action,
@@ -36,6 +34,7 @@ namespace NotBlockbuster {
             Duration = duration;
             ReleaseDate = releaseDate;
             NumAvCopies = numCopies;
+            NumTimesRented = 0;
         }
 
         // Get and Set movie properties
@@ -47,6 +46,7 @@ namespace NotBlockbuster {
         public int Duration { get; set; }
         public DateTime ReleaseDate { get; set; }
         public int NumAvCopies { get; set; }
+        public int NumTimesRented { get; set; }
 
         // Print movie properties
         public override string ToString() {
