@@ -40,9 +40,8 @@ namespace NotBlockbuster {
         public Movie SearchMovie(string movie_title) { return SearchRec(this.root, movie_title.ToLower()); }
 
         // Search for a given movie in the BST 
-        public Movie SearchRec(Node root, string movie_title)
-        {
-            // If the tree doesn't exist,
+        public Movie SearchRec(Node root, string movie_title) {
+            // If the tree doesn't exist
             if (root == null) { return null; }
             // If this node is the movie
             else if (string.Equals(root.movie.Title.ToLower(), movie_title)) { return root.movie; }
@@ -110,7 +109,7 @@ namespace NotBlockbuster {
             return root;
         }
 
-        // Calculate the next "smallest" node
+        // Calculate the successor (next "smallest") node
         public Movie MinValue(Node root) {
             Movie minv = root.movie;
             while (root.left != null) {
@@ -121,7 +120,7 @@ namespace NotBlockbuster {
         }
 
         ////////////////////////////////////////////////////////////////////////
-        /// PRINT BINARY SEARCH TREE
+        /// PRINT BST
         ////////////////////////////////////////////////////////////////////////
 
         // Entry point for printing the BST
@@ -211,15 +210,17 @@ namespace NotBlockbuster {
             QuickSortMovies(array_movies, 0, array_movies.Length-1);
             // Print the most popular movies
             Console.WriteLine("The 10 Most Popular Movies");
-            for (int i = 0; (i < array_movies.Length) && (i < 10); i++) {
-                if (array_movies[i].NumTimesRented > 1) {
-                    Console.WriteLine("({0}) \t '{1}' {2} rented {3} times.", i+1, array_movies[i].Title,
-                        new string(' ', 10-array_movies[i].Title.Length), array_movies[i].NumTimesRented);
-                } else {
-                    Console.WriteLine("({0}) \t '{1}' {2} rented {3} time.", i+1, array_movies[i].Title,
-                        new string(' ', 10 - array_movies[i].Title.Length), array_movies[i].NumTimesRented);
+            if (array_movies.Length > 0) {
+                for (int i = 0; (i < array_movies.Length) && (i < 10); i++) {
+                    if (array_movies[i].NumTimesRented > 1) {
+                        Console.WriteLine("({0}) \t '{1}' {2} rented {3} times.", i+1, array_movies[i].Title,
+                            new string(' ', 40-array_movies[i].Title.Length), array_movies[i].NumTimesRented);
+                    } else {
+                        Console.WriteLine("({0}) \t '{1}' {2} rented {3} time.", i+1, array_movies[i].Title,
+                            new string(' ', 40-array_movies[i].Title.Length), array_movies[i].NumTimesRented);
+                    }
                 }
-            }
+            } else { Console.WriteLine("There are currently no movies in the database."); }
         }
 
         // Entry point for sorting the movies by their popularity

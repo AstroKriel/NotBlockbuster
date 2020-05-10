@@ -184,7 +184,7 @@ namespace NotBlockbuster.Components {
                 } while (user_star.Length == 0);
                 // 6. Movie duration
                 // Perform the loop until the user has input a postive number
-                do { Console.Write("\t Duration: ");
+                do { Console.Write("\t Duration (mins): ");
                     user_input = Console.ReadLine();
                 } while (!int.TryParse(user_input, out user_length) || (Convert.ToInt32(user_length) < 0));
                 // 7. Movie release date
@@ -204,7 +204,7 @@ namespace NotBlockbuster.Components {
                     Classification: {(Movie.Classifications)user_class}
                     Director: {user_director}
                     Stars: {user_star}
-                    Duration: {user_length}
+                    Duration (mins): {user_length}
                     Release Date: {user_date.ToShortDateString()}
                     Number of copies: {user_copies}
                     ");
@@ -239,8 +239,11 @@ namespace NotBlockbuster.Components {
                     do {Console.Write("(Y)es / (N)o: ");
                         user_input = Console.ReadLine().ToLower();
                     } while (!( user_input.Equals("y") || user_input.Equals("n") ));
+                    Console.Write("\n");
                     if (user_input.Equals("y")) {
-                        // If the user would like to update the movie details
+                        // First remove the movie from the BST
+                        MainProgram.movie_collec.DeleteMovie(user_title);
+                        // Then add/update the movie details
                         MainProgram.movie_collec.InsertMovie(new Movie( user_title,
                                                                         (Movie.Genres)user_genre,
                                                                         (Movie.Classifications)user_class,
@@ -249,7 +252,7 @@ namespace NotBlockbuster.Components {
                                                                         user_length,
                                                                         user_date,
                                                                         user_copies));
-                    } else { Console.WriteLine("\nThe changes have been discarded.\n"); } // Otherwise, discard movie details
+                    } else { Console.WriteLine("The changes have been discarded.\n"); } // Otherwise, discard movie details
                 }
             }
             // Check if the user would like to add another movie
@@ -343,9 +346,8 @@ namespace NotBlockbuster.Components {
             string last_name;
             string address;
             string contact_number;
-            string password;
-            int temp_num;
             string user_input;
+            string password_str;
             bool bool_first_entry = true;
             // Perform the loop until the user has chosen a valid option
             do {// Clear the screen
@@ -377,19 +379,19 @@ namespace NotBlockbuster.Components {
                 // Perform the loop until the user has input a string of numbers
                 do { Console.Write("\t Contact number: ");
                     contact_number = Console.ReadLine();
-                } while ( !int.TryParse(contact_number, out temp_num) || (Convert.ToInt32(temp_num) < 0));
+                } while ( !int.TryParse(contact_number, out int temp_num) || (Convert.ToInt32(temp_num) < 0));
                 // 5. Member's password
                 // Perform the loop until the user has input a string
-                do { Console.Write("\t Password: ");
-                    password = Console.ReadLine();
-                } while (password.Length == 0);
+                do { Console.Write("\t Password (choose a four digit number): ");
+                    password_str = Console.ReadLine();
+                } while (!int.TryParse(password_str, out int password_int) || (Convert.ToInt32(password_int) < 0) || (password_str.Length != 4));
                 // Check the details are correct
                 Console.WriteLine("\nThe member details you entered are:");
                 Console.WriteLine($@"Member Details:
                     Name: {first_name} {last_name}
                     Address: {address}
                     Contact Number: {contact_number}
-                    Password: {password}
+                    Password: {password_str}
                     ");
                 // Perform this loop until the user has chosen a valid option
                 do {Console.Write("Are the member's DETAILS correct? (Y)es / (N)o / (0 to cancel): ");
@@ -406,7 +408,7 @@ namespace NotBlockbuster.Components {
             if (user_input.Equals("y")) {
                 if (MainProgram.member_collec.SearchForMember(first_name, last_name) == null) {
                     // If the member doesn't exist
-                    MainProgram.member_collec.AddMember(new Member(first_name, last_name, address, contact_number, password) );
+                    MainProgram.member_collec.AddMember(new Member(first_name, last_name, address, contact_number, password_str) );
                 } else {
                     // If the member exists, don't add the member
                     Console.WriteLine("Could not add the memeber. A member already exists with this name.");
@@ -458,7 +460,7 @@ namespace NotBlockbuster.Components {
                     last_name = Console.ReadLine();
                 } while (last_name.Length == 0);
                 // Perform this loop until the user has chosen a valid option
-                do {Console.Write("Are the member's DETAILS correct? (Y)es / (N)o / (0 to cancel): ");
+                do {Console.Write("\nAre the member's DETAILS correct? (Y)es / (N)o / (0 to cancel): ");
                     user_input = Console.ReadLine().ToLower();
                 } while (!( user_input.Equals("y") || user_input.Equals("n") || user_input.Equals("0") ));
                 // If the user's input is incorrect, display so when the menu is re-drawn
@@ -471,10 +473,10 @@ namespace NotBlockbuster.Components {
                 temp_member = MainProgram.member_collec.SearchForMember(first_name, last_name);
                 if (temp_member == null) {
                     // If the member doesn't exist
-                    Console.WriteLine("The member doesn't exist. Could not find the member's phone number.");
+                    Console.WriteLine("\nThe member doesn't exist. Could not find the member's phone number.");
                 } else {
                     // If the member exists, don't add the member
-                    Console.WriteLine("Member's contact number: " + temp_member.ContactNumber.ToString());
+                    Console.WriteLine("\nMember's contact number: " + temp_member.ContactNumber.ToString());
                 }
             }
             // Check if the user would like to find another member's number

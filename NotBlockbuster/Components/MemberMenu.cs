@@ -130,7 +130,6 @@ namespace NotBlockbuster.Components {
             Console.Clear();
             // Display all the movies
             Console.WriteLine("=========== Display all Movies ===========");
-            MainProgram.movie_collec.PrintBST();
             MainProgram.movie_collec.PrintMoviesInOrder();
             // Ask user when they would like to leave the page
             Console.WriteLine("Press any key when you would like to return to the member menu.");
@@ -267,7 +266,7 @@ namespace NotBlockbuster.Components {
                 bool_first_entry = false;
                 // Check to see if the user has exceeded the maximum number of allowable unsucessful tries
                 if (--user_tries < 1) {
-                    Console.WriteLine("The movie you are trying to return is not in the database.");
+                    Console.WriteLine("\nThe movie you are trying to return is not in the database.");
                     return;
                 }
             } while (!( user_input.Equals("0") || user_input.Equals("1") ) && (MainProgram.movie_collec.SearchMovie(user_input) == null ));
@@ -280,7 +279,7 @@ namespace NotBlockbuster.Components {
             else if (user_input.Equals("1")) { return; }
             movie_to_return = MainProgram.movie_collec.SearchMovie(user_input);
             // Make the user confirm that they would like to return the movie
-            do {Console.Write("Are you sure you would like to return '{0}'? (Y)es / (N)o: ", movie_to_return.Title);
+            do {Console.Write("\nAre you sure you would like to return '{0}'? (Y)es / (N)o: ", movie_to_return.Title);
                 user_input = Console.ReadLine().ToLower();
             } while (!( user_input.Equals("y") || user_input.Equals("n") ));
             // If the user would like to return the movie, then check that they are currently renting the movie
@@ -296,11 +295,11 @@ namespace NotBlockbuster.Components {
                     }
                 }
                 // If the movie was not in the user's list of currently renting, then let them know
-                if (!bool_could_return) { Console.WriteLine("You aren't currently renting {0}, so could not return the movie.\n", movie_to_return.Title); }
+                if (!bool_could_return) { Console.WriteLine("\nYou aren't currently renting {0}, so could not return the movie.\n", movie_to_return.Title); }
             }
             // Check if the user would like to return another movie
             // Perform this loop until the user has chosen a valid option
-            do {Console.Write("Would you like to RETURN another movie? (Y)es / (N)o: ");
+            do {Console.Write("\nWould you like to RETURN another movie? (Y)es / (N)o: ");
                 user_input = Console.ReadLine().ToLower();
             } while (!( user_input.Equals("y") || user_input.Equals("n") ));
             // If the user would like to return another movie, then stay on the RETURN MOVIE menu
